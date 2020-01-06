@@ -9,6 +9,7 @@ import time
 import threading
 
 class Server:
+    clients = []
     def __init__(self, host, port):
         self.host = host
         self.port = port
@@ -22,14 +23,27 @@ class Server:
         while 1:
             client_socket, client_address = self.network.accept()
             print(f'client {client_address} connected')
+            client_socket.send('HLO'.encode())
             time.sleep(0.1)
-            threading.Thread(target=self.wait_for_user_nickname, args=[client_socket])
+            client_thread = threading.Thread(target=self.wait_for_user_nickname, args=[client_socket])
+            client_thread.start()
 
-    def wait_for_user_nickname(self):
-        pass
+    def wait_for_user_nickname(self, client_socket):
+        new_client_id = client_socket.recv(1024).decode('utf-8')
+        client = Client(client_socket, new_client_id)
+        Server.clients.append(client)
+        client.start()
 
 
+class Client:
+    def __init__(self, client_socket, id):
+        self.client_socket = client_socket
+        self.client_id = id
+        self._run = True
 
+    def start(self):
+        while self._run:
+            time.sleep(0.1)
 
 
 
