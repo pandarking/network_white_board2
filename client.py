@@ -33,13 +33,9 @@ class Connection:
                 break
         self.soc_ket.sendall((self.nickname.encode('utf-8')))
 
-    def start(self):
-        while 1:
-            time.sleep(0.1)
-
     def recive_msg(self):
         while 1:
-            time.sleep(0.1)
+            time.sleep(1)
             data = self.soc_ket.recv(1).decode('ISO-8859-1')
             if data == 'ß':
                 print('ß')
@@ -50,6 +46,7 @@ class Connection:
 
 if __name__ == '__main__':
     con = Connection()
+    con.recive_msg()
     print('start')
 
 
