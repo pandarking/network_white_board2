@@ -27,10 +27,25 @@ class UserDialog:
         e1 = Entry(ClientWindow).grid(row=1, column=1)
         e2 = Entry(ClientWindow).grid(row=2, column=1)
 
-        button = Button(ClientWindow, text='ok', command=getUserIpAndPort).grid(row=3, column=1)
+        Button(ClientWindow, text='ok', command=getUserIpAndPort).grid(row=3, column=1)
 
         ClientWindow.mainloop()
 
+    @classmethod
+    def getUserNickname(cls):
+        def getUserNicknameinner():
+            cls._Nickname = e1.get()
+            ClientWindow.destroy()
+
+        ClientWindow = Tk()
+        ClientWindow.title('White Board Client')
+        Label(ClientWindow, text='请输入昵称').grid(row=0)
+        Label(ClientWindow, text='昵称').grid(row=1)
+        e1 = Entry(ClientWindow).grid(row=1, column=1)
+
+        Button(ClientWindow, text='ok', command=getUserNicknameinner).grid(row=2, column=1)
+
+        ClientWindow.mainloop()
 
 
 
