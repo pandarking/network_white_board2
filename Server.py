@@ -18,10 +18,12 @@ class Server:
         self.network.listen(20)
 
         print(f'sever listen at {self.port}')
+        threading.Thread(target=self.pinger).start()
 
     # 心跳线程
     def pinger(self):
         while 1:
+            time.sleep(1)
             for client in Server.clients:
                 try:
                     msg = 'ß'.encode('ISO-8859-1')
