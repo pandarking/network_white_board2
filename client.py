@@ -37,6 +37,16 @@ class Connection:
         while 1:
             time.sleep(0.1)
 
+    def recive_msg(self):
+        while 1:
+            time.sleep(0.1)
+            data = self.soc_ket.recv(1).decode('ISO-8859-1')
+            if data == 'ß':
+                print('ß')
+                continue
+            else:
+                pass
+
 
 if __name__ == '__main__':
     con = Connection()
