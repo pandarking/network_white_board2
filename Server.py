@@ -25,6 +25,13 @@ class Server:
             print(f'client {client_address} connected')
             client_socket.send('HLO'.encode())
             time.sleep(0.1)
+
+            msg = ' '
+            for client in Server.clients:
+                msg = msg + ' ' + client.client_id
+
+            client_socket.send(msg.encode('utf-8'))
+
             client_thread = threading.Thread(target=self.wait_for_user_nickname, args=[client_socket])
             client_thread.start()
 
@@ -46,7 +53,9 @@ class Client:
             time.sleep(0.1)
 
 
-
+if __name__ == '__main__':
+    server = Server('0.0.0.0', 6000)
+    server.start()
 
 
 
