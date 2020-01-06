@@ -53,11 +53,11 @@ class WhiteBoard:
         Button(self.myWhiteBoard, height=1, width=5, bg='green',
                command=lambda: self.set_color('green')).place(x=1010, y=200)
         Button(self.myWhiteBoard, height=1, width=5, bg='pink',
-               command=lambda: self.set_color('cyan')).place(x=1010, y=250)
+               command=lambda: self.set_color('pink')).place(x=1010, y=250)
         Button(self.myWhiteBoard, height=1, width=5, bg='blue',
                command=lambda: self.set_color('blue')).place(x=1010, y=300)
         Button(self.myWhiteBoard, height=1, width=5, bg='purple1',
-               command=lambda: self.set_color('purple1')).place(x=1010, y=350)
+               command=lambda: self.set_color('purple')).place(x=1010, y=350)
         Button(self.myWhiteBoard, height=1, width=5, bg='black',
                command=lambda: self.set_color('black')).place(x=1010, y=400)
         Button(self.myWhiteBoard, height=1, width=5, bg='snow',
