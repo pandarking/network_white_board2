@@ -19,6 +19,23 @@ class Server:
 
         print(f'sever listen at {self.port}')
 
+    # 心跳线程
+    def pinger(self):
+        while 1:
+            for client in Server.clients:
+                try:
+                    msg = 'ß'.encode('ISO-8859-1')
+                    print('ß')
+                    client.client_socket.send(msg)
+                except ConnectionResetError:
+                    print('ConnectionResetError')
+                    client.terminate()
+                    Server.clients.remove(client)
+                except ConnectionAbortedError:
+                    client.terminate()
+                    Server.clients.remove(client)
+                    print('ConnectionAbortedError')
+
     def start(self):
         while 1:
             client_socket, client_address = self.network.accept()
@@ -47,6 +64,9 @@ class Client:
         self.client_socket = client_socket
         self.client_id = id
         self._run = True
+
+    def terminate(self):
+        self._run = False
 
     def start(self):
         while self._run:
