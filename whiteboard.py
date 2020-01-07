@@ -89,11 +89,27 @@ class WhiteBoard:
         color = msglist[5]
         self.drawing_area.create_line(startX, startY, endX, endY, fill=color, width=self.line_width)
 
+    def draw_rectangle(self, msglist):
+        startX, startY, endX, endY = int(msglist[1]), int(msglist[2]), int(msglist[3]), int(msglist[4])
+        color = msglist[5]
+        self.drawing_area.create_rectangle(startX, startY, endX, endY, fill=color, width=0)
+
+    def draw_oval(self, msglist):
+        startX, startY, endX, endY = int(msglist[1]), int(msglist[2]), int(msglist[3]), int(msglist[4])
+        color = msglist[5]
+        self.drawing_area.create_oval(startX, startY, endX, endY, fill=color, width=0)
+
     def draw_from_msg(self, msg):
         msglist = msg.split()
         draw_type = msglist[0]
         if draw_type == 'D':
             self.draw_line(msglist)
+        elif draw_type == 'R':
+            self.draw_rectangle(msglist)
+        elif draw_type == 'L':
+            self.draw_line(msglist)
+        elif draw_type == 'O':
+            self.draw_oval(msglist)
         else:
             pass
 

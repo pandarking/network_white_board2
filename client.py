@@ -11,6 +11,7 @@ from whiteboard import WhiteBoard
 
 
 class Client(Thread, WhiteBoard):
+    Objects = {'line': 'L', 'oval': 'O', 'circle': 'C', 'rectangle': 'R', 'square': 'S', 'erase': 'E', 'drag': 'DR'}
     def __init__(self):
         self.connection = Connection()
         Thread.__init__(self)
@@ -20,6 +21,8 @@ class Client(Thread, WhiteBoard):
         self.isMouseDown = False
         self.x_pos = None
         self.y_pos = None
+        self.x_pos2 = None
+        self.y_pos2 = None
         self.last_time = None
 
     def _init_mouse_event(self):
@@ -37,9 +40,19 @@ class Client(Thread, WhiteBoard):
         self.isMouseDown = False
         print(event.x, event.y)
         self.last_time = None
+        self.x_pos2 = event.x
+        self.y_pos2 = event.y
+        self.draw_object()
+
+    def draw_object(self):
+        if self.drawing_tool not in Client.Objects:
+            return
+        else:
+            msg = (Client.Objects[self.drawing_tool], self.x_pos, self.y_pos, self.x_pos2, self.y_pos2, 'red')
+            self.connection.send_message(msg)
 
     def motion(self, event=None):
-        if self.isMouseDown:
+        if self.isMouseDown and self.drawing_tool == 'pencil':
             now = time.time()
             if now - self.last_time < 0.02:
                 # print('too fast')
