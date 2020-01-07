@@ -5,6 +5,7 @@
 # @File    : whiteboard.py
 # @Software: PyCharm
 from tkinter import *
+import math
 
 
 class WhiteBoard:
@@ -99,6 +100,20 @@ class WhiteBoard:
         color = msglist[5]
         self.drawing_area.create_oval(startX, startY, endX, endY, fill=color, width=0)
 
+    def draw_circle(self, msglist):
+        a, b, c, d = int(msglist[1]), int(msglist[2]), int(msglist[3]), int(msglist[4])
+        color = msglist[5]
+        radius = math.sqrt((a-c)**2 + (b-d)**2) / 2
+        x_center = (a + c) / 2
+        y_center = (b + d) / 2
+        self.drawing_area.create_oval(x_center-radius, y_center-radius, x_center+radius, y_center+radius, fill=color, width=0)
+
+    def draw_square(self, msglist):
+        a, b, c, d = int(msglist[1]), int(msglist[2]), int(msglist[3]), int(msglist[4])
+        color = msglist[5]
+        radius = (c + d - a - b) / 2
+        self.drawing_area.create_rectangle(a, b, a+radius, b+radius, fill=color, width=0)
+
     def draw_from_msg(self, msg):
         msglist = msg.split()
         draw_type = msglist[0]
@@ -110,6 +125,10 @@ class WhiteBoard:
             self.draw_line(msglist)
         elif draw_type == 'O':
             self.draw_oval(msglist)
+        elif draw_type == 'C':
+            self.draw_circle(msglist)
+        elif draw_type == 'S':
+            self.draw_square(msglist)
         else:
             pass
 
