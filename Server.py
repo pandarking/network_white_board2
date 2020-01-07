@@ -10,6 +10,7 @@ import threading
 
 class Server:
     clients = []
+    logs = {}
     def __init__(self, host, port):
         self.host = host
         self.port = port
@@ -56,12 +57,15 @@ class Server:
 
     def wait_for_user_nickname(self, client_socket):
         new_client_id = client_socket.recv(1024).decode('utf-8')
+        for msg in Server.logs.values():
+            client_socket.sendall(msg.encode('ISO-8859-1'))
         client = Client(client_socket, new_client_id)
         Server.clients.append(client)
         client.start()
 
 
 class Client:
+    msgId = 0
     def __init__(self, client_socket, client_id):
         self.client_socket = client_socket
         self.client_id = client_id
@@ -78,8 +82,10 @@ class Client:
                 msg += data
                 if data == 'Ø':
                     break
+            Server.logs[Client.msgId] = msg
             if msg[0] == 'D':
                 self.broadcast2clients(msg)
+            Client.msgId += 1
 
     def broadcast2clients(self, msg):
         msg = msg.encode('ISO-8859-1')
