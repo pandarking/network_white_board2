@@ -9,6 +9,7 @@ from tkinter import *
 
 class WhiteBoard:
     drawing_tool = 'line'
+    line_width = 2
     colors = {'b': 'blue', 'r': 'red', 'g': 'green', 'o': 'orange', 'y': 'yellow', 'pu': 'purple', 'pi': 'pink',
               'd': 'black', 's': 'snow'
               }
@@ -16,8 +17,11 @@ class WhiteBoard:
         self._init_whiteboard()
         self._init_item_button()
         self._init_color_button()
+        self._init_drawing_area()
         self.color = 'd'
-        mainloop()
+
+    def show_window(self):
+        self.myWhiteBoard.mainloop()
 
     def _init_whiteboard(self):
         self.myWhiteBoard = Tk()
@@ -76,8 +80,22 @@ class WhiteBoard:
     def get_text_from_user(self):
         self.drawing_tool = 'text'
 
+    def _init_drawing_area(self):
+        self.drawing_area = Canvas(self.myWhiteBoard, width=1000, height=740, bg='white')
+        self.drawing_area.place(y=40)
 
+    def draw_line(self, msglist):
+        startX, startY, endX, endY = int(msglist[1]), int(msglist[2]), int(msglist[3]), int(msglist[4])
+        color = msglist[5]
+        self.drawing_area.create_line(startX, startY, endX, endY, fill=color, width=self.line_width)
 
+    def draw_from_msg(self, msg):
+        msglist = msg.split()
+        draw_type = msglist[0]
+        if draw_type == 'D':
+            self.draw_line(msglist)
+        else:
+            pass
 
 
 if __name__ == '__main__':

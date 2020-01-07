@@ -1,58 +1,68 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2020/1/6 10:00
+# @Time    : 2020/1/7 9:49
 # @Author  : Panboshen
 # @Email   : 570169891@qq.com
 # @File    : client.py
 # @Software: PyCharm
-import socket
-from UserDialog import UserDialog
-import socket
 import time
+from threading import Thread
+from connection import Connection
+from whiteboard import WhiteBoard
 
 
-class Connection:
+class Client(Thread, WhiteBoard):
     def __init__(self):
-        UserDialog.getUserIp()
-        self.host = UserDialog._Ip
-        self.port = UserDialog._Port
+        self.connection = Connection()
+        Thread.__init__(self)
+        WhiteBoard.__init__(self)
+        self._init_mouse_event()
+        self.setDaemon(True)
+        self.isMouseDown = False
+        self.x_pos = None
+        self.y_pos = None
+        self.last_time = None
 
-        self.soc_ket = socket.socket()
-        self.soc_ket.connect((self.host, self.port))
-        data = self.soc_ket.recv(3).decode()
-        print(data)
+    def _init_mouse_event(self):
+        self.drawing_area.bind("<Motion>", self.motion)
+        self.drawing_area.bind("<ButtonPress-1>", self.left_button_down)
+        self.drawing_area.bind("<ButtonRelease-1>", self.left_button_up)
 
-        usernames = self.soc_ket.recv(1024).decode('utf-8')
-        userlist = usernames.split()
+    def left_button_down(self, event=None):
+        self.isMouseDown = True
+        self.x_pos = event.x
+        self.y_pos = event.y
+        self.last_time = time.time()
 
+    def left_button_up(self, event=None):
+        self.isMouseDown = False
+        print(event.x, event.y)
+        self.last_time = None
+
+    def motion(self, event=None):
+        if self.isMouseDown:
+            now = time.time()
+            if now - self.last_time < 0.02:
+                # print('too fast')
+                return
+            self.last_time = now
+            msg = ('D', self.x_pos, self.y_pos, event.x, event.y, 'red')
+            self.connection.send_message(msg)
+            self.x_pos = event.x
+            self.y_pos = event.y
+
+    def run(self):
         while 1:
-            UserDialog.getUserNickname()
-            self.nickname = UserDialog._Nickname
-            if self.nickname in userlist:
-                UserDialog.show_error_box('用户名已存在')
-            else:
-                break
-        self.soc_ket.sendall((self.nickname.encode('utf-8')))
-
-    def recive_msg(self):
-        while 1:
-            time.sleep(1)
-            data = self.soc_ket.recv(1).decode('ISO-8859-1')
-            if data == 'ß':
-                print('ß')
-                continue
-            else:
+            msg = self.connection.receive_msg()
+            self.draw_from_msg(msg)
+            if msg == 'xxx':
                 pass
 
 
 if __name__ == '__main__':
-    con = Connection()
-    con.recive_msg()
+    client = Client()
     print('start')
-
-
-
-
-
+    client.start()
+    client.show_window()
 
 
 

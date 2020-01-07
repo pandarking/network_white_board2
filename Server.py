@@ -27,7 +27,7 @@ class Server:
             for client in Server.clients:
                 try:
                     msg = 'ß'.encode('ISO-8859-1')
-                    print('ß')
+                    # print('ß')
                     client.client_socket.send(msg)
                 except ConnectionResetError:
                     print('ConnectionResetError')
@@ -43,7 +43,7 @@ class Server:
             client_socket, client_address = self.network.accept()
             print(f'client {client_address} connected')
             client_socket.send('HLO'.encode())
-            time.sleep(0.1)
+            # time.sleep(0.1)
 
             msg = ' '
             for client in Server.clients:
@@ -62,9 +62,9 @@ class Server:
 
 
 class Client:
-    def __init__(self, client_socket, id):
+    def __init__(self, client_socket, client_id):
         self.client_socket = client_socket
-        self.client_id = id
+        self.client_id = client_id
         self._run = True
 
     def terminate(self):
@@ -72,7 +72,19 @@ class Client:
 
     def start(self):
         while self._run:
-            time.sleep(0.1)
+            msg = ''
+            while 1:
+                data = self.client_socket.recv(1).decode('ISO-8859-1')
+                msg += data
+                if data == 'Ø':
+                    break
+            if msg[0] == 'D':
+                self.broadcast2clients(msg)
+
+    def broadcast2clients(self, msg):
+        msg = msg.encode('ISO-8859-1')
+        for client in Server.clients:
+            client.client_socket.sendall(msg)
 
 
 if __name__ == '__main__':
